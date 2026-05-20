@@ -1,0 +1,140 @@
+name: Autograding Tests
+'on':
+- workflow_dispatch
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Step3 - Ex3
+      id: step3-ex3
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Step3 - Ex3
+        setup-command: ''
+        command: test -f figures/step-3-0.png
+        timeout: 10
+        max-score: 1
+    - name: Step3 - Ex4
+      id: step3-ex4
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Step3 - Ex4
+        setup-command: ''
+        command: test -f figures/step-3-1.png
+        timeout: 10
+        max-score: 1
+    - name: Step3 - Ex5
+      id: step3-ex5
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Step3 - Ex5
+        setup-command: ''
+        command: test -f figures/step-3-2.png
+        timeout: 10
+        max-score: 1
+    - name: Step3 - Ex6
+      id: step3-ex6
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Step3 - Ex6
+        setup-command: ''
+        command: test -f figures/step-3-3.png
+        timeout: 10
+        max-score: 1
+    - name: Step3 - Ex7
+      id: step3-ex7
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Step3 - Ex7
+        setup-command: ''
+        command: test -f figures/step-3-4.png
+        timeout: 10
+        max-score: 1
+    - name: Parameters - HyperBall
+      id: parameters-hyperball
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Parameters - HyperBall
+        setup-command: ''
+        command: test -f figures/hyper_ball.png
+        timeout: 10
+        max-score: 1
+    - name: Parameters - HyperCube
+      id: parameters-hypercube
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Parameters - HyperCube
+        setup-command: ''
+        command: test -f figures/hyper_cube.png
+        timeout: 10
+        max-score: 1
+    - name: Parameters - HyperShell
+      id: parameters-hypershell
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Parameters - HyperShell
+        setup-command: ''
+        command: test -f figures/hyper_shell.png
+        timeout: 10
+        max-score: 1
+    - name: Parameters - SinBc
+      id: parameters-sinbc
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Parameters - SinBc
+        setup-command: ''
+        command: test -f figures/sin_bc.png
+        timeout: 10
+        max-score: 1
+    - name: Parameters - SinRhs
+      id: parameters-sinrhs
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Parameters - SinRhs
+        setup-command: ''
+        command: test -f figures/sin_rhs.png
+        timeout: 10
+        max-score: 1
+    - name: Build code
+      id: build-code
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Build code
+        setup-command: ''
+        command: .scripts/dr.sh "mkdir build; cd build; cmake -GNinja ..; ninja;"
+        timeout: 10
+        max-score: 5
+    - name: Run tests
+      id: run-tests
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: Run tests
+        setup-command: ''
+        command: .scripts/dr.sh "cd build; ctest -N; ctest --output-on-failure"
+        timeout: 10
+        max-score: 5
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        STEP3-EX3_RESULTS: "${{steps.step3-ex3.outputs.result}}"
+        STEP3-EX4_RESULTS: "${{steps.step3-ex4.outputs.result}}"
+        STEP3-EX5_RESULTS: "${{steps.step3-ex5.outputs.result}}"
+        STEP3-EX6_RESULTS: "${{steps.step3-ex6.outputs.result}}"
+        STEP3-EX7_RESULTS: "${{steps.step3-ex7.outputs.result}}"
+        PARAMETERS-HYPERBALL_RESULTS: "${{steps.parameters-hyperball.outputs.result}}"
+        PARAMETERS-HYPERCUBE_RESULTS: "${{steps.parameters-hypercube.outputs.result}}"
+        PARAMETERS-HYPERSHELL_RESULTS: "${{steps.parameters-hypershell.outputs.result}}"
+        PARAMETERS-SINBC_RESULTS: "${{steps.parameters-sinbc.outputs.result}}"
+        PARAMETERS-SINRHS_RESULTS: "${{steps.parameters-sinrhs.outputs.result}}"
+        BUILD-CODE_RESULTS: "${{steps.build-code.outputs.result}}"
+        RUN-TESTS_RESULTS: "${{steps.run-tests.outputs.result}}"
+      with:
+        runners: step3-ex3,step3-ex4,step3-ex5,step3-ex6,step3-ex7,parameters-hyperball,parameters-hypercube,parameters-hypershell,parameters-sinbc,parameters-sinrhs,build-code,run-tests
